@@ -1,0 +1,83 @@
+{
+  "manifest_version": 3,
+  "name": "Developer Tool in One: SEO, Ruler & Text Checker And More (BETA)",
+  "version": "1.0.3",
+  "description": "All-in-one web developer toolkit. Inspect SEO, audit colors, measure with a page ruler, check text, and capture screenshots.",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtRkbtMCdHb3o3dcMYAXcFpw+X6cHgNZgZOwn7Dv0yZwho3m2lvrKBHz97cKavmujUaiK9G2kNRvtSFW56Qtm/kDMSqhP+mmBDTsbCybBMV1fZGGdfaVghCk1MeAlz3RNXWQRmfdRjEg4sUSYc64SZPWmAEzFHBZjXuFlkqlXjnxxkJvBK5xmeNU9oZ57evW7b/ol+vH0wI0cC8ZphbCGkQMsmpx3Fd/wWXduEAGlfjEBjWXwiQ1k7f7xNaQ5QswFgfl7rpSvTs8J5LAbYfE/WMBpUfaYGHIiLEtKCR5i7M8eOlJXGwNljv7WTpbocscM/lvCXLADUJvkJqDmbJu6aQIDAQAB",
+  "permissions": [
+    "storage",
+    "tabs",
+    "activeTab",
+    "scripting",
+    "contextMenus",
+    "webRequest",
+    "identity"
+  ],
+  "oauth2": {
+    "client_id": "318358438798-8skgvp6v5ulm2m30kjsmfml4cjkhh5mb.apps.googleusercontent.com",
+    "scopes": [
+      "https://www.googleapis.com/auth/userinfo.email",
+      "https://www.googleapis.com/auth/userinfo.profile"
+    ]
+  },
+  "host_permissions": [
+    "<all_urls>",
+    "https://*.firebaseio.com/*",
+    "https://*.googleapis.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "action": {
+    "default_title": "All in One Dev Tool",
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "exclude_matches": [
+        "*://buy.stripe.com/*",
+        "*://checkout.stripe.com/*"
+      ],
+      "js": [
+        "js/content-helpers.js", 
+        "js/content-ui-panel.js",
+        "js/content-text-checker.js",
+        "content.js"
+      ],
+      "type": "module",
+      "run_at": "document_idle"
+    }
+  ],
+  "icons": {
+    "16": "icon.png",
+    "48": "icon.png",
+    "128": "icon.png"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "index.html",
+        "popup.html",
+        "icon.png",
+        "devtool.js",
+        "colorPicker.js",
+        "popup.js",
+        "bulk_open.html",
+        "modules/bulk_open_page.js",
+        "modules/text_checker.html",
+        "modules/text_checker.js",
+        "js/content-helpers.js",
+        "js/content-ui-panel.js",
+        "js/content-text-checker.js",
+        "content.js"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
+    }
+  ]
+}

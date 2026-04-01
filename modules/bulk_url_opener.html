@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Bulk URL Opener</title>
+        <style>
+            /* Make the body fill the whole window with no margins */
+    body { 
+        font-family: system-ui, sans-serif; 
+        background: #fff; 
+        margin: 0; 
+        height: 100vh;
+        display: flex;
+    }
+    
+    /* Remove the fixed sizing, let it fill the window completely */
+    .panel { 
+        background: #fff; 
+        width: 100%; 
+        height: 100%; 
+        display: flex; 
+        flex-direction: column; 
+        /* Removed border-radius and box-shadow since it's the whole window now */
+    }
+     .header { background: #1e293b; color: #fff; padding: 20px 25px; font-weight: bold; font-size: 20px; display: flex; justify-content: space-between; flex-shrink: 0; }
+    .content { padding: 25px; display: flex; flex-direction: column; flex-grow: 1; }
+    .label { margin-bottom: 8px; font-weight: bold; font-size: 14px; color: #333; }
+    textarea { width: 100%; flex-grow: 1; padding: 12px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; margin-bottom: 20px; font-family: monospace; font-size: 13px; resize: none; outline: none; }
+    textarea:focus { border-color: #007bff; box-shadow: 0 0 0 3px rgba(0,123,255,0.1); }
+    .row { display: flex; gap: 12px; margin-bottom: 20px; align-items: center; flex-shrink: 0; flex-wrap: wrap;}
+    button { padding: 10px 16px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; background: transparent; transition: 0.2s; white-space: nowrap;}
+    .btn-blue { border: 1px solid #007bff; color: #007bff; } .btn-blue:hover { background: #007bff; color: #fff; }
+    .btn-yellow { border: 1px solid #f59e0b; color: #f59e0b; margin-left: auto; } .btn-yellow:hover { background: #f59e0b; color: #fff; }
+    .btn-green { border: 1px solid #28a745; color: #28a745; } .btn-green:hover { background: #28a745; color: #fff; }
+    
+    /* MODAL UI */
+    .modal-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255, 255, 255, 0.95); display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 100; text-align: center; padding: 20px; }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+    .spinner { width: 40px; height: 40px; border: 4px solid #e2e8f0; border-top: 4px solid #10b981; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px; }
+    .modal-title { font-size: 18px; font-weight: bold; color: #1e293b; margin-bottom: 8px; }
+    .modal-url { font-size: 13px; color: #3b82f6; word-break: break-all; max-width: 90%; font-family: monospace; margin-bottom: 15px; min-height: 35px; line-height: 1.5; }
+    
+    /* NEW: Sleek Progress Bar inside Modal */
+    .progress-container { width: 100%; max-width: 350px; height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden; box-shadow: inset 0 1px 2px rgba(0,0,0,0.1); }
+    .progress-bar { height: 100%; background: #10b981; width: 0%; transition: width 0.3s ease; }
+  </style>
+    </head>
+    <body>
+        <div class="panel">
+            <div class="header"><span>🚀 Bulk URL Opener & Checker</span></div>
+            <div class="content">
+                <div class="label">URLs to process:</div>
+                <textarea id="url-input" placeholder="https://example.com&#10;https://google.com"></textarea>
+                <div class="row">
+                    <button class="btn-blue" id="btn-open">Open Links</button>
+                    <button class="btn-green" id="btn-check-status">🔍 Check Status</button>
+                    <button class="btn-blue" id="btn-get-tabs">Get list of currently open tabs</button>
+                    <button class="btn-yellow" id="btn-clear">Clear current links</button>
+                </div>
+            </div>
+
+            <div class="modal-overlay" id="audit-modal">
+                <div class="spinner"></div>
+                <div class="modal-title" id="audit-progress">Auditing: 0 / 0</div>
+                <div class="modal-url" id="audit-current-url">Initializing...</div>
+                <div class="progress-container"><div class="progress-bar" id="audit-progress-bar"></div></div>
+            </div>
+        </div>
+
+        <script src="bulk_open_page.js"></script>
+    </body>
+</html>

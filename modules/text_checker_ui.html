@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Style Reference Document</title>
+    <style>
+        body { font-family: system-ui, sans-serif; margin: 0; padding: 0; background: #f8f9fa; display: flex; flex-direction: column; height: 100vh; }
+        
+        .header { background: #fff; padding: 10px 24px; border-bottom: 1px solid #dadce0; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+        .target-url { font-size: 12px; color: #1a73e8; background: #e8f0fe; padding: 4px 8px; border-radius: 4px; display: inline-block; max-width: 400px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; vertical-align: middle; }
+        .legend { font-size: 11px; display: flex; gap: 10px; margin-top: 5px; font-weight: 500;}
+        .leg-green { color: #15803d; } .leg-red { color: #dc2626; } .leg-orange { color: #ea580c; } .leg-purple { color: #a855f7; }
+        
+        .settings-bar { background: #edf2fa; padding: 8px 24px; display: flex; gap: 15px; font-size: 13px; border-bottom: 1px solid #dadce0; align-items: center; flex-wrap: wrap; }
+        .btn { background: #1a73e8; color: #fff; border: none; padding: 8px 24px; border-radius: 4px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .btn:hover { background: #1557b0; }
+        .btn-reset { background: #dc2626; margin-right: 10px; }
+        .btn-reset:hover { background: #b91c1c; }
+
+        /* Loader Animation */
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .loader-icon { display: inline-block; animation: spin 1s linear infinite; font-size: 14px; margin-right: 4px; }
+
+        /* Google Docs Style Toolbar */
+        .toolbar { background: #edf2fa; padding: 5px 24px; display: flex; gap: 4px; border-bottom: 1px solid #dadce0; align-items: center; flex-wrap: wrap; position: relative; }
+        .tool-btn { background: transparent; border: 1px solid transparent; border-radius: 4px; padding: 4px 6px; cursor: pointer; font-size: 14px; color: #444; display: flex; align-items: center; justify-content: center; min-width: 24px; height: 28px; position: relative; transition: background 0.1s;}
+        .tool-btn:hover { background: #e8eaed; border-color: #dadce0; }
+        .tool-btn.active { background: #d3e3fd; color: #0b57d0; font-weight: bold; }
+        .tool-sep { width: 1px; height: 20px; background: #dadce0; margin: 0 4px; }
+        .tool-select { border: 1px solid transparent; background: transparent; border-radius: 4px; padding: 4px; cursor: pointer; color: #444; font-size: 13px; outline: none; }
+        .tool-select:hover { background: #e8eaed; border-color: #dadce0; }
+
+        .fs-control { display: flex; align-items: center; border: 1px solid #dadce0; border-radius: 4px; background: #fff; overflow: hidden; height: 26px; }
+        .fs-btn { background: #fff; border: none; cursor: pointer; padding: 0 8px; font-size: 16px; font-weight: bold; color: #5f6368; }
+        .fs-btn:hover { background: #e8eaed; }
+        .fs-input { width: 36px; text-align: center; border: none; border-left: 1px solid #dadce0; border-right: 1px solid #dadce0; outline: none; font-size: 13px; font-family: inherit; }
+
+        /* Custom Split Dropdowns for Lists */
+        .split-btn { display: flex; align-items: center; position: relative; }
+        .split-btn .tool-btn:first-child { border-top-right-radius: 0; border-bottom-right-radius: 0; }
+        .split-btn .drop-arrow { border-top-left-radius: 0; border-bottom-left-radius: 0; min-width: 16px; padding: 4px; font-size: 10px; border-left: 1px solid transparent; }
+        .split-btn:hover .drop-arrow { border-left-color: #dadce0; }
+        .drop-menu { position: absolute; top: 100%; left: 0; background: #fff; border: 1px solid #dadce0; box-shadow: 0 4px 10px rgba(0,0,0,0.15); border-radius: 4px; padding: 4px 0; display: none; z-index: 100; min-width: 140px; }
+        .drop-item { padding: 6px 15px; font-size: 13px; cursor: pointer; color: #333; display: flex; align-items: center; gap: 8px; }
+        .drop-item:hover { background: #f1f3f4; }
+        .drop-item.active { background: #e8f0fe; color: #1a73e8; }
+
+        /* Color Picker Buttons */
+        .color-indicator { width: 14px; height: 3px; position: absolute; bottom: 2px; left: 50%; transform: translateX(-50%); border-radius: 2px; }
+        .color-palette { position: absolute; top: 40px; background: #fff; border: 1px solid #dadce0; box-shadow: 0 4px 10px rgba(0,0,0,0.15); border-radius: 8px; padding: 10px; display: none; z-index: 100; width: 220px; }
+        .color-grid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 4px; }
+        .color-swatch { width: 16px; height: 16px; border-radius: 50%; cursor: pointer; border: 1px solid rgba(0,0,0,0.1); }
+        .color-swatch:hover { transform: scale(1.2); }
+
+        .canvas-area { flex-grow: 1; overflow-y: auto; display: flex; justify-content: center; padding: 40px; background: #f1f3f4; }
+        .editor { background: #fff; width: 850px; min-height: 1056px; height: max-content; padding: 60px 80px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid #dadce0; outline: none; line-height: 1.6; word-wrap: break-word; font-size: 16px; font-family: Arial, sans-serif; position: relative;}
+        .editor ul, .editor ol { padding-left: 40px; margin: 10px 0; }
+
+        /* Scroll Arrow */
+        .scroll-arrow { cursor: pointer; color: #1a73e8; font-size: 14px; margin-right: 8px; user-select: none; display: inline-block; padding: 2px 6px; border-radius: 4px; background: #e8f0fe; transition: 0.2s;}
+        .scroll-arrow:hover { background: #d3e3fd; transform: scale(1.1); }
+
+        /* Canvas Highlights */
+        .hl-missing { background: rgba(239, 68, 68, 0.1); border-left: 4px solid #ef4444; padding-left: 8px; }
+        .hl-mismatch { background-color: rgba(249, 115, 22, 0.15); border-left: 4px solid #f97316; padding-left: 8px; }
+        .hl-partial { background-color: rgba(168, 85, 247, 0.15); border-left: 4px solid #a855f7; padding-left: 8px; }
+        .hl-perfect { background-color: rgba(34, 197, 94, 0.1); border-left: 4px solid #22c55e; padding-left: 8px; }
+
+        /* Link specific highlights inside canvas */
+        .hl-link-mismatch { background-color: #ffedd5; border-bottom: 2px solid #ea580c; cursor: pointer; }
+        .hl-link-perfect { background-color: #dcfce7; border-bottom: 2px solid #22c55e; cursor: pointer; }
+        .hl-link-missing { background-color: #fee2e2; border-bottom: 2px solid #ef4444; text-decoration: line-through; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div>
+            <h2 style="margin: 0 0 5px 0; font-size: 18px; color: #202124;">📝 Text & Style Checker</h2>
+            <div title="Target Website URL">Target: <span class="target-url" id="target-url-display">Loading...</span></div>
+            <div class="legend">
+                <span class="leg-green">■ Perfect Match</span>
+                <span class="leg-orange">■ Mismatch Properties</span>
+                <span class="leg-purple">■ Partial (Missing Words)</span>
+                <span class="leg-red">■ Completely Missing</span>
+            </div>
+        </div>
+        <div>
+            <span id="status" style="margin-right: 15px; font-size: 14px; color: #5f6368;">Ready</span>
+            <button id="reset-btn" class="btn btn-reset">Reset Checks</button>
+            <button id="check-btn" class="btn">Verify Live Website</button>
+        </div>
+    </div>
+
+    <div class="settings-bar">
+        <strong>Check Mode:</strong>
+        <label style="color: #1a73e8; font-weight: bold; cursor: pointer;">
+            <input type="checkbox" id="chk-text-only" checked> Compare Text ONLY
+        </label>
+        <div class="tool-sep" style="height: 14px;"></div>
+        <label style="color: #ea580c; font-weight: bold; cursor: pointer;">
+            <input type="checkbox" id="chk-links-only"> Check Links ONLY
+        </label>
+        <div class="tool-sep" style="height: 14px;"></div>
+        
+        <label style="color: #d63384; font-weight: bold; cursor: pointer;" title="Strictly enforce uppercase/lowercase and spacing">
+            <input type="checkbox" id="chk-exact-match"> Exact match
+        </label>
+
+        <div class="tool-sep" style="height: 14px;"></div>
+        <strong>Verify Attributes:</strong>
+        <label><input type="checkbox" class="chk-attr" id="chk-color"> Colors</label>
+        <label><input type="checkbox" class="chk-attr" id="chk-format"> Formatting</label>
+        <label><input type="checkbox" class="chk-attr" id="chk-family"> Font</label>
+        <label><input type="checkbox" class="chk-attr" id="chk-size"> Size</label>
+    </div>
+
+    <div class="toolbar" id="toolbar">
+        <button class="tool-btn" data-cmd="undo" title="Undo">↩</button>
+        <button class="tool-btn" data-cmd="redo" title="Redo">↪</button>
+        <button class="tool-btn" data-cmd="removeFormat" title="Clear Formatting">🆑</button>
+        <button class="tool-btn" id="btn-source" title="Toggle Source Code">{' '}</button>
+        <div class="tool-sep"></div>
+        
+        <select class="tool-select" id="formatBlock">
+            <option value="P">Normal text</option>
+            <option value="H1">Heading 1</option>
+            <option value="H2">Heading 2</option>
+            <option value="H3">Heading 3</option>
+            <option value="H4">Heading 4</option>
+            <option value="H5">Heading 5</option>
+            <option value="H6">Heading 6</option>
+        </select>
+        
+        <div class="tool-sep"></div>
+        <select class="tool-select" id="fontName" style="width: 100px;">
+            <option value="Arial" selected>Arial</option>
+            <option value="'Courier New'">Courier New</option>
+            <option value="Georgia">Georgia</option>
+            <option value="Impact">Impact</option>
+            <option value="'Times New Roman'">Times New Roman</option>
+            <option value="Verdana">Verdana</option>
+        </select>
+        <div class="tool-sep"></div>
+        
+        <div class="fs-control">
+            <button class="fs-btn" id="fs-dec">-</button>
+            <input type="number" class="fs-input" id="fs-val" value="16">
+            <button class="fs-btn" id="fs-inc">+</button>
+        </div>
+        
+        <div class="tool-sep"></div>
+        <button class="tool-btn" data-cmd="bold" title="Bold" style="font-weight: bold;">B</button>
+        <button class="tool-btn" data-cmd="italic" title="Italic" style="font-style: italic;">I</button>
+        <button class="tool-btn" data-cmd="underline" title="Underline" style="text-decoration: underline;">U</button>
+        <button class="tool-btn" data-cmd="strikeThrough" title="Strikethrough" style="text-decoration: line-through;">S</button>
+        <button class="tool-btn" data-cmd="superscript" title="Superscript">x²</button>
+        <button class="tool-btn" data-cmd="subscript" title="Subscript">x₂</button>
+        <div class="tool-sep"></div>
+
+        <button class="tool-btn" id="btn-text-color" title="Text Color">A <div class="color-indicator" id="ind-text-color" style="background:#000;"></div></button>
+        <button class="tool-btn" id="btn-bg-color" title="Highlight Color">🖍 <div class="color-indicator" id="ind-bg-color" style="background:#fff;"></div></button>
+        <div class="tool-sep"></div>
+
+        <button class="tool-btn" data-cmd="createLink" title="Insert Link">🔗</button>
+        <button class="tool-btn" data-cmd="insertImage" title="Insert Image">🖼</button>
+        <button class="tool-btn" id="btn-table" title="Insert Table">▦</button>
+        <button class="tool-btn" id="btn-emoji" title="Insert Emoji">😀</button>
+        <div class="tool-sep"></div>
+
+        <button class="tool-btn" data-cmd="justifyLeft" title="Align Left">⫷</button>
+        <button class="tool-btn" data-cmd="justifyCenter" title="Align Center">☰</button>
+        <button class="tool-btn" data-cmd="justifyRight" title="Align Right">⫸</button>
+        <button class="tool-btn" data-cmd="justifyFull" title="Justify">≡</button>
+        <div class="tool-sep"></div>
+
+        <div class="split-btn">
+            <button class="tool-btn" data-cmd="insertUnorderedList" title="Bullet List">●¯</button>
+            <button class="tool-btn drop-arrow" id="ul-drop-btn">▼</button>
+            <div class="drop-menu" id="ul-menu">
+                <div class="drop-item active" data-style="disc"><span style="font-size:16px;">●</span> Default</div>
+                <div class="drop-item" data-style="circle"><span style="font-size:16px;">○</span> Circle</div>
+                <div class="drop-item" data-style="square"><span style="font-size:16px;">■</span> Square</div>
+            </div>
+        </div>
+
+        <div class="split-btn" style="margin-left:4px;">
+            <button class="tool-btn" data-cmd="insertOrderedList" title="Numbered List">1¯</button>
+            <button class="tool-btn drop-arrow" id="ol-drop-btn">▼</button>
+            <div class="drop-menu" id="ol-menu">
+                <div class="drop-item active" data-style="decimal">1, 2, 3 (Default)</div>
+                <div class="drop-item" data-style="lower-alpha">a, b, c</div>
+                <div class="drop-item" data-style="upper-alpha">A, B, C</div>
+                <div class="drop-item" data-style="lower-roman">i, ii, iii</div>
+                <div class="drop-item" data-style="upper-roman">I, II, III</div>
+                <div class="drop-item" data-style="lower-greek">α, β, γ</div>
+            </div>
+        </div>
+
+        <button class="tool-btn" data-cmd="outdent" title="Decrease Indent" style="margin-left: 8px;">⇤</button>
+        <button class="tool-btn" data-cmd="indent" title="Increase Indent">⇥</button>
+        
+        <div class="color-palette" id="color-palette-popup">
+            <div style="font-size: 11px; margin-bottom: 5px; color: #555;">Theme Colors</div>
+            <div class="color-grid" id="color-grid-container"></div>
+        </div>
+    </div>
+
+    <div class="canvas-area">
+        <div class="editor" id="editor" contenteditable="true">
+            <p style="color:#94a3b8;">Paste text from a document or website here...</p>
+        </div>
+    </div>
+
+    <script src="text_checker_ui.js"></script>
+</body>
+</html>

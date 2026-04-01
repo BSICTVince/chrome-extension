@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dev Tool Popup</title>
+    <style>
+      /* ==========================================================================
+         GLOBAL STYLES & TYPOGRAPHY
+         ========================================================================== */
+      body {
+        font-family: system-ui, -apple-system, sans-serif;
+        width: 280px;
+        margin: 0;
+        padding: 0;
+        background-color: #f8fafc; 
+        color: #333;
+      }
+
+      /* ==========================================================================
+         APPLICATION HEADER (UPDATED WITH ICONS)
+         ========================================================================== */
+      .header {
+        background: #1e293b; 
+        color: #fff;
+        padding: 14px 16px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      }
+      .header-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .header-title svg {
+        width: 18px;
+        height: 18px;
+        fill: #3b82f6; 
+      }
+      .header h3 {
+        margin: 0;
+        font-size: 15px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+      }
+      .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .action-icon {
+        width: 18px;
+        height: 18px;
+        fill: #94a3b8; /* Subtle gray */
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+      .action-icon:hover {
+        fill: #ffffff; /* Lights up on hover */
+        transform: scale(1.1);
+      }
+      #open-admin-btn:hover {
+        fill: #3b82f6; /* Admin shield turns blue on hover */
+      }
+
+      /* ==========================================================================
+         MAIN CONTENT AREA & SETTING ROWS
+         ========================================================================== */
+      .content {
+        padding: 15px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .setting-row {
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 12px 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+        transition: all 0.2s ease;
+      }
+      .setting-row:hover {
+        border-color: #cbd5e1;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      }
+
+      .setting-info {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+      }
+      .setting-title {
+        font-size: 13px;
+        font-weight: 600;
+        color: #1e293b;
+      }
+      .setting-desc {
+        font-size: 11px;
+        color: #64748b;
+      }
+
+      #launch-bulk-btn:hover {
+        background: #f0f8ff; 
+        border-color: #007bff;
+      }
+
+      /* ==========================================================================
+         TOGGLE SWITCH
+         ========================================================================== */
+      .switch {
+        position: relative;
+        display: inline-block;
+        width: 36px;
+        height: 20px;
+        flex-shrink: 0;
+      }
+      .switch input { 
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+      .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background-color: #cbd5e1;
+        transition: .3s;
+        border-radius: 20px;
+      }
+      .slider:before {
+        position: absolute;
+        content: "";
+        height: 14px;
+        width: 14px;
+        left: 3px;
+        bottom: 3px;
+        background-color: white;
+        transition: .3s;
+        border-radius: 50%;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+      }
+      input:checked + .slider {
+        background-color: #007bff; 
+      }
+      input:checked + .slider:before {
+        transform: translateX(16px);
+      }
+      
+      /* Base Badge Style */
+      #popup-upgrade-badge {
+        display: none; /* Hidden until Firebase checks role */
+        font-size: 9px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 3px 8px;
+        border-radius: 12px;
+        margin-left: 8px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        transition: all 0.2s ease;
+        align-items: center;
+        white-space: nowrap;
+      }
+
+      /* Guest State: Yellow & Clickable */
+      .badge-upgrade {
+        background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+        color: #451a03;
+        border: 1px solid #d97706;
+        cursor: pointer;
+      }
+      .badge-upgrade:hover {
+        transform: translateY(-1px) scale(1.03);
+        box-shadow: 0 4px 8px rgba(245, 158, 11, 0.4);
+        background: linear-gradient(135deg, #fcd34d 0%, #fbbf24 100%);
+      }
+
+      /* VIP State: Green & Not Clickable */
+      .badge-vip {
+        background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+        color: #ffffff;
+        border: 1px solid #15803d;
+        cursor: default; /* Arrow cursor, no pointer */
+      }
+      /* Admin State: Indigo/Purple & Not Clickable */
+      .badge-admin {
+        background: linear-gradient(135deg, #4f46e5 0%, #312e81 100%); /* Deep indigo */
+        color: #ffffff;
+        border: 1px solid #1e1b4b;
+        cursor: default; /* Normal arrow cursor */
+      }
+      /* ==========================================================================
+         AUTH & FOOTER
+         ========================================================================== */
+      .footer {
+        text-align: center;
+        padding: 10px;
+        font-size: 10px;
+        color: #94a3b8;
+        border-top: 1px solid #e2e8f0;
+        margin-top: 5px;
+      }
+      .google-btn {
+        background: #fff; color: #3c4043; border: 1px solid #dadce0; border-radius: 4px;
+        padding: 8px 16px; font-size: 14px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); transition: 0.2s;
+      }
+      .google-btn:hover { background: #f8f9fa; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+    </style>
+  </head>
+  <body>
+
+    <div id="auth-overlay"
+      style="position: absolute; top: 50px; left: 0; width: 100%; height: calc(100% - 50px); background: rgba(255,255,255,0.95); z-index: 100; display: flex; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(2px);">
+      <h3 style="margin: 0 0 8px 0; color: #1e293b;">Sign In Required</h3>
+      <p
+        style="font-size: 12px; color: #64748b; text-align: center; margin: 0 20px 20px;">Please
+        authenticate with Google to unlock Dev Toolkit features.</p>
+      <button id="google-login-btn" class="google-btn">
+        <svg width="16" height="16" viewBox="0 0 48 48"><path fill="#EA4335"
+            d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z" /><path
+            fill="#4285F4"
+            d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z" /><path
+            fill="#FBBC05"
+            d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z" /><path
+            fill="#34A853"
+            d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z" /></svg>
+        Sign in with Google
+      </button>
+    </div>
+
+    <div
+      style="border-top: 1px solid #e2e8f0; padding: 12px; font-size: 11px; color: #94a3b8; display: flex; justify-content: space-between; background: #f8fafc;">
+      <span id="user-email-text">Extension v1.0</span>
+      <span id="logout-btn"
+        style="cursor: pointer; color: #ef4444; font-weight: bold; display: none;">Logout</span>
+    </div>
+
+    <div class="header">
+      <div class="header-title">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M22.7 14.3L21.7 15.3C21.5 15.5 21.2 15.6 20.9 15.6C20.6 15.6 20.3 15.5 20.1 15.3L15.3 10.5C15 10.1 15 9.4 15.3 9L16.3 8C16.5 7.8 16.8 7.7 17.1 7.7C17.4 7.7 17.7 7.8 17.9 8L22.7 12.8C23.1 13.2 23.1 13.9 22.7 14.3ZM13.2 12.6L11.4 14.4C11.2 14.6 10.9 14.7 10.6 14.7C10.3 14.7 10 14.6 9.8 14.4L5 9.6C4.6 9.2 4.6 8.5 5 8.1L6 7.1C6.2 6.9 6.5 6.8 6.8 6.8C7.1 6.8 7.4 6.9 7.6 7.1L12.4 11.9C12.8 12.3 12.8 13 12.4 13.4V12.6H13.2Z"></path><path
+            d="M14.6 4.40002C13.8 3.60002 12.5 3.40002 11.4 3.90002L9.4 1.90002C9 1.50002 8.4 1.50002 8 1.90002L1.9 8.00002C1.5 8.40002 1.5 9.00002 1.9 9.40002L3.9 11.4C3.4 12.5 3.6 13.8 4.4 14.6C5.5 15.7 7.3 15.7 8.4 14.6L14.6 8.40002C15.7 7.30002 15.7 5.50002 14.6 4.40002Z"></path>
+        </svg>
+        <h3>Dev toolkit</h3>
+        <div id="popup-upgrade-badge"></div>
+      </div>
+
+      <div class="header-actions">
+        <svg id="open-admin-btn" class="action-icon" style="display: none;"
+          title="Admin Dashboard" viewBox="0 0 24 24">
+          <path
+            d="M12 1L3 5V11C3 16.55 6.84 21.74 12 23C17.16 21.74 21 16.55 21 11V5L12 1ZM12 11.99H19C18.47 16.11 15.72 19.78 12 20.92V12H5V6.3L12 3.19V11.99Z"></path>
+        </svg>
+
+        <svg id="open-settings" class="action-icon" title="Global Settings"
+          viewBox="0 0 24 24">
+          <path
+            d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.06-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.73,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.06,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.43-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.49-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"></path>
+        </svg>
+      </div>
+    </div>
+
+    <div class="content" id="main-view">
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <span class="setting-title">On-Page Toolkit</span>
+          <span class="setting-desc">Inject floating dev menu</span>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="enableToolTip">
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <span class="setting-title">Image Info Context Menu</span>
+          <span class="setting-desc">Right-click images for details</span>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="enableImageInfo">
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="setting-row" id="launch-bulk-btn" style="cursor: pointer;">
+        <div class="setting-info">
+          <span class="setting-title">Bulk URL Opener</span>
+          <span class="setting-desc">Launch standalone tool</span>
+        </div>
+        <div
+          style="font-weight: bold; color: #007bff; font-size: 18px; padding-right: 5px;">↗</div>
+      </div>
+
+    </div>
+
+    <div id="settings-view"
+      style="display: none; padding: 15px; background: #f8fafc; min-height: 150px;">
+
+      <div style="display: flex; align-items: center; margin-bottom: 20px;">
+        <span id="close-settings"
+          style="cursor: pointer; margin-right: 10px; font-size: 16px;">🔙</span>
+        <h2 style="margin: 0; font-size: 15px; color: #1e293b;">Global
+          Settings</h2>
+      </div>
+
+      <div
+        style="background: white; border: 1px solid #e2e8f0; border-radius: 6px; padding: 15px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+        <label
+          style="font-weight: bold; font-size: 13px; color: #475569; display: block; margin-bottom: 8px;">
+          Ruler & Guides Unit
+        </label>
+        <select id="ruler-unit-select"
+          style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #cbd5e1; font-size: 13px; outline: none;">
+          <option value="px">Pixels (px)</option>
+          <option value="%">Percentage (%)</option>
+        </select>
+        <p style="font-size: 11px; color: #94a3b8; margin: 8px 0 0 0;">
+          Changes apply instantly to active rulers.
+        </p>
+      </div>
+      <div
+        style="background: white; border: 1px solid #e2e8f0; border-radius: 6px; padding: 15px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin-top: 15px;">
+        <label
+          style="font-weight: bold; font-size: 13px; color: #475569; display: block; margin-bottom: 8px;">
+          Account Sync
+        </label>
+        <p style="font-size: 11px; color: #94a3b8; margin: 0 0 10px 0;">
+          Your VIP status is cached for 24 hours. Click below to force a manual
+          sync with the database.
+        </p>
+        <button id="force-sync-btn"
+          style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #cbd5e1; background: #f8fafc; font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: 0.2s;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2"><path
+              d="M21 2v6h-6"></path><path
+              d="M3 12a9 9 0 0 1 15-6.7L21 8"></path><path
+              d="M3 22v-6h6"></path><path
+              d="M21 12a9 9 0 0 1-15 6.7L3 16"></path></svg>
+          Force Sync Status
+        </button>
+      </div>
+
+    </div>
+
+    <div class="footer">
+      Extension v1.0
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/cache-manager.js"></script>
+    <script src="js/popup.js"></script>
+  </body>
+</html>

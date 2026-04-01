@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>My Extension Popup</title>
+    <style>
+    /* Only essential, active styles kept here */
+    .tooltipContent {
+      display: none;
+    }
+
+    .tooltipWrapper {
+      background-color: #ffffff;
+      width: auto; 
+      height: auto;
+      font-size: 14px;
+      color: #000;
+      padding: 10px; 
+      border-radius: 6px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .tooltipWrapper.show {
+      display: block;
+    }
+
+    .meta_checker {
+      display: none;
+    }
+
+    .meta_checker.show {
+      display: block;
+    }
+
+    /* Quick styling for the new AI button to make it stand out */
+    #qaCompareBtn {
+      margin-top: 10px;
+      width: 100%;
+      padding: 6px;
+      background: #8b5cf6;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.2s;
+    }
+    #qaCompareBtn:hover {
+      background: #7c3aed;
+    }
+
+    /* Styling for the disabled text */
+    .disabled-label {
+      color: #999;
+      cursor: not-allowed;
+    }
+
+    /* Styling for the upgrade indicator */
+    .upgrade-badge {
+      background-color: #ffc107;
+      color: #000;
+      font-size: 10px;
+      font-weight: bold;
+      padding: 2px 6px;
+      border-radius: 12px;
+      margin-left: 8px;
+      vertical-align: middle;
+      cursor: pointer;
+    }
+
+    /* Ensure the disabled checkbox shows a "not allowed" cursor */
+    .tool-checkbox:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+  </style>
+  </head>
+
+  <body>
+    <div class="tooltipWrapper">
+      <div class="c-content" data-extension-ui>
+        <h1 style="font-size: 18px; margin-top: 0; border-bottom: 1px solid #eee; padding-bottom: 5px;">Dev Helper</h1>
+
+        <div>
+          <input type="checkbox" class="tool-checkbox" id="inject_heading_labels"> 
+          <label for="inject_heading_labels">Show tags</label><br />
+        </div>
+
+        <div>
+          <input type="checkbox" class="tool-checkbox" id="inject_alt_labels"> 
+          <label for="inject_alt_labels">Show Image Alt</label><br />
+        </div>
+
+        <div>
+          <input type="checkbox" class="tool-checkbox" id="inject_seo_checker"> 
+          <label for="inject_seo_checker">SEO Checker</label><br />
+        </div>
+
+        <div>
+          <input type="checkbox" class="tool-checkbox" id="inject_ruler"> 
+          <label for="inject_ruler">Show Ruler</label><br />
+        </div>
+
+        <div>
+          <input type="checkbox" class="tool-checkbox" id="inject_font_checker"> 
+          <label for="inject_font_checker">Font checker</label><br />
+        </div>
+
+        <div>
+          <input type="checkbox" class="tool-checkbox" id="inject_color_picker"> 
+          <label for="inject_color_picker">Color Picker</label><br />
+        </div>
+
+        <div>
+          <input type="checkbox" class="tool-checkbox" id="inject_color_audit"> 
+          <label for="inject_color_audit">Color Audit</label><br />
+        </div>
+
+        <div>
+          <input type="checkbox" class="tool-checkbox" id="inject_link_audit"> 
+          <label for="inject_link_audit">Link Audit</label><br />
+        </div>
+
+        <div>
+          <input type="checkbox" class="tool-checkbox" id="inject_text_checker"> 
+          <label for="inject_text_checker">Text Checker</label><br />
+        </div>
+
+        <div>
+          <input type="checkbox" class="tool-checkbox" id="inject_hello_world"> 
+          <label for="inject_hello_world">Say Hello 🎆</label><br />
+        </div>
+
+      </div>
+    </div>
+  </body>
+</html>
